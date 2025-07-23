@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SSigninForm, FormContainer, InputGroup, SubmitButton, LinkText } from './styles';
+import { Link } from 'react-router-dom';
 
 type SigninData = {
   name: string;
@@ -93,7 +94,7 @@ export function SigninForm({ onSubmit, isLoading = false }: SigninFormProps) {
         </form>
 
         <LinkText>
-          Já tem uma conta? <a href="/login">ENTRE</a>
+          Já tem uma conta? <Link to="/login">ENTRE</Link>
         </LinkText>
       </FormContainer>
     </SSigninForm>

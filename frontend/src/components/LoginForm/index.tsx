@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SLoginForm, FormContainer, InputGroup, SubmitButton, LinkText, ForgotPasswordLink } from './styles';
+import { Link } from 'react-router-dom';
 
 type LoginFormProps = {
   onSubmit: (credentials: { email: string; password: string }) => void;
@@ -42,7 +43,7 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
           </InputGroup>
 
           <ForgotPasswordLink>
-            <a href="/forgotpassword">Esqueci minha senha</a>
+            <Link to="/forgotpassword">Esqueci minha senha</Link>
           </ForgotPasswordLink>
 
           <SubmitButton type="submit" disabled={isLoading}> 
@@ -51,7 +52,7 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
         </form>
 
         <LinkText>
-          Ainda não tem uma conta? <a href="/signin">CADASTRE-SE</a>
+          Ainda não tem uma conta? <Link to="/signin">CADASTRE-SE</Link>
         </LinkText>
       </FormContainer>
     </SLoginForm>
