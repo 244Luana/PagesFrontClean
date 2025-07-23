@@ -111,3 +111,96 @@ export const SReviewText = styled.p`
   text-align: justify;
 `;
 
+
+export const SReviewActions = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  justify-content: flex-end;
+`;
+
+export const SActionButton = styled.button<{ $variant: 'edit' | 'delete' | 'save' | 'cancel' }>`
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  ${props => {
+    switch (props.$variant) {
+      case 'edit':
+        return `
+          background-color: #007bff;
+          color: white;
+          &:hover {
+            background-color: #0056b3;
+          }
+        `;
+      case 'delete':
+        return `
+          background-color: #dc3545;
+          color: white;
+          &:hover {
+            background-color: #c82333;
+          }
+        `;
+      case 'save':
+        return `
+          background-color: #28a745;
+          color: white;
+          &:hover {
+            background-color: #218838;
+          }
+        `;
+      case 'cancel':
+        return `
+          background-color: #6c757d;
+          color: white;
+          &:hover {
+            background-color: #5a6268;
+          }
+        `;
+      default:
+        return `
+          background-color: #007bff;
+          color: white;
+        `;
+    }
+  }}
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
+export const SEditForm = styled.div`
+  margin-top: 10px;
+`;
+
+export const SEditTextarea = styled.textarea`
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  }
+`;
+
+export const SEditActions = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: flex-end;
+`;
+

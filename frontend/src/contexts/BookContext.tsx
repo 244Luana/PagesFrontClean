@@ -1,7 +1,6 @@
 import { createContext, useState, useEffect, type ReactNode } from "react"
 import type { BookProps } from "../types/BookType"
 import { apiBook } from "../services/intex"
-import { mockPosts } from "../mocks/PostMock"
 
 interface BookContextType {
   books: BookProps[]
@@ -32,17 +31,18 @@ export const BookProvider = ({ children }: BookProviderProps) => {
       setIsLoading(true)
       const response = await apiBook.getAll()
       setBooks(response.data || [])
+      //console.log("Livros carregados:", response.data)
     } catch (error) {
       console.error("Erro ao carregar livros:", error)
       // Usar dados mock como fallback
-      const mockBooks = mockPosts.map(post => ({
+      /*const mockBooks = mockPosts.map(post => ({
         id: post.id,
         title: post.title,
         description: `Descrição do livro ${post.title}`,
         figure: post.figure,
         autor: post.autor
-      }))
-      setBooks(mockBooks)
+      }))*/
+      //setBooks(mockBooks)
     } finally {
       setIsLoading(false)
     }

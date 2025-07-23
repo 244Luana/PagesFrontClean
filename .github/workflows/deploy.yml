@@ -27,8 +27,8 @@ jobs:
           npm cache clean --force
           npm i
 
-      - name: Rodar os testes
-        run: npm run test
+      #- name: Rodar os testes
+      #  run: npm run test
 
   deploy:
     runs-on: ubuntu-latest

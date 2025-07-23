@@ -5,7 +5,11 @@ export interface IReview {
     review: string
     date?: string
 }
+
 class ReviewData {
+    getAllRevies(){
+        return api.get("/reviews/")
+    }
     getByUser() {
         return api.get(`/reviews/user/`)
     }
@@ -14,6 +18,9 @@ class ReviewData {
     }
     create(data: IReview) {
         return api.post('/reviews/', data)
+    }
+    update(id: string, data: IReview) {
+        return api.put(`/reviews/${id}`, data)
     }
     delete(id: string) {
         return api.delete(`/reviews/${id}`)

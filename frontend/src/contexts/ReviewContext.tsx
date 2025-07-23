@@ -9,6 +9,7 @@ interface ReviewContextType {
   getReviewsByBook: (book_id: string) => Promise<ReviewProps[]>
   getReviewsByUser: () => Promise<ReviewProps[]>
   addReview: (Review: Omit<ReviewProps, "id" | "date">) => Promise<ReviewProps>
+  updateReview: (id: string, updatedReview: Partial<Omit<ReviewProps, "id" | "date" | "user_id" >>) => Promise<ReviewProps>
   deleteReview: (id: string) => Promise<void>
 }
 
@@ -19,6 +20,7 @@ export const ReviewContext = createContext<ReviewContextType>({
   getReviewsByBook: async () => [],
   getReviewsByUser: async () => [],
   addReview: async () => ({ id: "", book_id: "", user_id: "", review:"", date: `${new Date()}` }),
+  updateReview: async () => ({ id: "", book_id: "", user_id: "", review:"", date: `${new Date()}` }),
   deleteReview: async () => { },
 })
 
@@ -34,7 +36,7 @@ export const ReviewProvider = ({ children }: ReviewProviderProps) => {
     try {
       setIsLoading(true)
       // Como não temos endpoint para todos os reviews, vamos simular com dados mock
-      const mockReviews: ReviewProps[] = [
+      /*const mockReviews: ReviewProps[] = [
         {
           id: "review-1",
           book_id: "post-1",
@@ -100,7 +102,10 @@ export const ReviewProvider = ({ children }: ReviewProviderProps) => {
             role: "user"
           }
         }
-      ]
+      ]*/
+      const result = await apiReview.getAllRevies()
+      const mockReviews: ReviewProps[] = result.data || []
+    
       return mockReviews
     } catch (error) {
       console.error("Erro ao buscar todos os reviews:", error)
@@ -155,6 +160,21 @@ export const ReviewProvider = ({ children }: ReviewProviderProps) => {
     }
   }
 
+  const updateReview = async (id: string, updatedReview: Partial<Omit<ReviewProps, "id" | "date" | "user_id">>): Promise<ReviewProps> => {
+    try {
+      setIsLoading(true)
+      const response = await apiReview.update(id, {book_id: updatedReview.book_id ?? "", review: updatedReview.review??""})
+      const updated = response.data
+      setReviews(prev => prev.map(review => review.id === id ? updated : review))
+      return updated
+    } catch (error) {
+      console.error("Erro ao atualizar review:", error)
+      throw error
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const deleteReview = async (id: string): Promise<void> => {
     try {
       setIsLoading(true)
@@ -177,6 +197,7 @@ export const ReviewProvider = ({ children }: ReviewProviderProps) => {
         getReviewsByBook,
         getReviewsByUser,
         addReview,
+        updateReview,
         deleteReview,
       }}
     >

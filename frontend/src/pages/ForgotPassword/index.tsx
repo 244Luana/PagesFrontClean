@@ -7,7 +7,7 @@ export function ForgotPassword() {
   const navigate = useNavigate();
 
   const handleRecover = (email: string, nome: string) => {
-    alert(`Um link de recuperação foi enviado para ${email}`);
+    alert(`${nome}Um link de recuperação foi enviado para ${email}`);
     navigate("/login");
   };
 

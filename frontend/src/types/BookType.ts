@@ -2,7 +2,7 @@ export interface BookProps {
   id: string;
   title: string;
   description: string,
-  figure: string;
+  content: string;
   autor: string;
 }
 

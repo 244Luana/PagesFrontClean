@@ -7,13 +7,13 @@ export interface IUser {
 }
 class UserData {
     register(data: IUser) {
-        return api.post('/users/register/', { ...data, role: "user" })
+        return api.post('/users/register', { ...data, role: "user" })
     }
     login(data: IUser) {
-        return api.post('/users/login/', data)
+        return api.post('/users/login', data)
     }
     me() {
-        return api.get('/users/me/')
+        return api.get('/users/me')
     }
 }
 

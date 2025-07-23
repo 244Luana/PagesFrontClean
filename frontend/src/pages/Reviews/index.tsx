@@ -32,13 +32,18 @@ import {
   SNoReviewsMessage,
   SAddReviewSection,
   SLoginMessage,
-  SLoginButton
+  SLoginButton,
+  SReviewActions,
+  SActionButton,
+  SEditForm,
+  SEditTextarea,
+  SEditActions
 } from "./styles";
 
 export function Reviews() {
   const { bookId } = useParams<{ bookId: string }>();
   const { getBooks } = useBook();
-  const { getReviewsByBook, addReview, isLoading } = useReview();
+  const { getReviewsByBook, addReview, updateReview, deleteReview, isLoading } = useReview();
   const { currentUser } = useAuth();
   
   const [book, setBook] = useState(getBooks(bookId || ""));
@@ -46,11 +51,14 @@ export function Reviews() {
   const [newReview, setNewReview] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
+  const [editingText, setEditingText] = useState("");
 
   useEffect(() => {
     if (bookId) {
       const foundBook = getBooks(bookId);
       setBook(foundBook);
+      console.log(foundBook?.content)
       loadReviews();
     }
   }, [bookId, getBooks]);
@@ -103,6 +111,61 @@ export function Reviews() {
     }
   };
 
+  const handleEditReview = (review: ReviewProps) => {
+    setEditingReviewId(review.id);
+    setEditingText(review.review);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingReviewId(null);
+    setEditingText("");
+  };
+
+  const handleSaveEdit = async (reviewId: string) => {
+    if (!editingText.trim()) {
+      setError("O review não pode estar vazio");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      await updateReview(reviewId, { review: editingText.trim() });
+      setEditingReviewId(null);
+      setEditingText("");
+      await loadReviews(); // Recarrega os reviews
+    } catch (err) {
+      console.error("Erro ao editar review:", err);
+      setError("Erro ao editar review. Tente novamente.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteReview = async (reviewId: string) => {
+    if (!window.confirm("Tem certeza que deseja excluir este review?")) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      await deleteReview(reviewId);
+      await loadReviews(); // Recarrega os reviews
+    } catch (err) {
+      console.error("Erro ao excluir review:", err);
+      setError("Erro ao excluir review. Tente novamente.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const canEditOrDelete = (review: ReviewProps) => {
+    return currentUser && currentUser.id === review.user_id;
+  };
+
   if (!book) {
     return (
       <SReviewsPage>
@@ -120,7 +183,7 @@ export function Reviews() {
       <Header />
       <SReviewsContent>
         <SBookSection>
-          <SBookImage src={book.figure} alt={book.title} />
+          <SBookImage src={book.content} alt={book.title} />
           <SBookInfo>
             <SBookTitle>{book.title}</SBookTitle>
             <SBookAuthor>por {book.autor}</SBookAuthor>
@@ -145,7 +208,52 @@ export function Reviews() {
                     {review.user?.name || "Usuário Anônimo"}
                   </SReviewAuthor>
                   <SReviewDate>{new Date(review.date).toLocaleDateString()}</SReviewDate>
-                  <SReviewComment>{review.review}</SReviewComment>
+                  
+                  {editingReviewId === review.id ? (
+                    <SEditForm>
+                      <SEditTextarea
+                        value={editingText}
+                        onChange={(e) => setEditingText(e.target.value)}
+                        rows={4}
+                      />
+                      <SEditActions>
+                        <SActionButton 
+                          onClick={() => handleSaveEdit(review.id)}
+                          disabled={isSubmitting}
+                          $variant="save"
+                        >
+                          {isSubmitting ? "Salvando..." : "Salvar"}
+                        </SActionButton>
+                        <SActionButton 
+                          onClick={handleCancelEdit}
+                          disabled={isSubmitting}
+                          $variant="cancel"
+                        >
+                          Cancelar
+                        </SActionButton>
+                      </SEditActions>
+                    </SEditForm>
+                  ) : (
+                    <>
+                      <SReviewComment>{review.review}</SReviewComment>
+                      {canEditOrDelete(review) && (
+                        <SReviewActions>
+                          <SActionButton 
+                            onClick={() => handleEditReview(review)}
+                            $variant="edit"
+                          >
+                            Editar
+                          </SActionButton>
+                          <SActionButton 
+                            onClick={() => handleDeleteReview(review.id)}
+                            $variant="delete"
+                          >
+                            Excluir
+                          </SActionButton>
+                        </SReviewActions>
+                      )}
+                    </>
+                  )}
                 </SReviewItem>
               ))}
             </SReviewsList>

@@ -15,13 +15,16 @@ export function Post({ posts }: Props) {
 
   return (
     <SPostContainer>
-      {posts.map((post) => (
-        <SPostItem key={post.id} onClick={() => handleBookClick(post.id)}>
-          <SPostImage src={post.figure} alt={post.title} />
+      {posts.map((post) => {
+        console.log(post.content)
+        return (<SPostItem key={post.id} onClick={() => handleBookClick(post.id)}>
+          <SPostImage src={post.content} alt={post.title} />
+          
+          {/*<SPostImage src={post.figure} alt={post.title} />*/}
           <SPostTitle>{post.title}</SPostTitle>
           <SPostAuthor>{post.autor}</SPostAuthor>
-        </SPostItem>
-      ))}
+        </SPostItem>)
+})}
     </SPostContainer>
   );
 }

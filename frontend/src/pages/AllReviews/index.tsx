@@ -38,6 +38,11 @@ export function AllReviews() {
     }
   };
 
+  const handleReviewUpdated = () => {
+    // Recarrega a lista de reviews quando um review é editado ou excluído
+    loadAllReviews();
+  };
+
   return (
     <SAllReviewsPage>
       <Header />
@@ -55,7 +60,11 @@ export function AllReviews() {
         ) : (
           <SReviewsList>
             {reviews.map((review) => (
-              <ReviewCard key={review.id} review={review} />
+              <ReviewCard 
+                key={review.id} 
+                review={review} 
+                onReviewUpdated={handleReviewUpdated}
+              />
             ))}
           </SReviewsList>
         )}
